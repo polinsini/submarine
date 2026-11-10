@@ -311,3 +311,23 @@ class TestSubmarine(unittest.TestCase):
             del r.energy
         self.assertEqual(r.get_status(), before)
 
+    def test_TC_28(self):
+        """TC-28."""
+        # Act / Assert
+        with self.assertRaises(ValueError):
+            Submarine("Жемчужина", 2, 10 ** 1000)
+
+    def test_TC_29(self):
+        """TC-29."""
+        # Arrange
+        r = Submarine("Жемчужина", 2, 10)
+        r.dive(20)
+        r.swim(4.9)
+        self.assertAlmostEqual(r.energy, 0.2, delta=1e-7)
+        self.assertAlmostEqual(r.distance_km, 4.9, delta=1e-7)
+        before = r.get_status()
+        # Act / Assert: сравнение энергии строгое, без допуска 1e-7
+        with self.assertRaises(NotEnoughEnergyError):
+            r.swim(0.1)
+        self.assertEqual(r.get_status(), before)
+
